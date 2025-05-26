@@ -10,7 +10,6 @@ export default function LoginPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // 로그인 요청 처리 (예: API 호출)
     console.log("로그인 요청:", { email, password });
   };
 

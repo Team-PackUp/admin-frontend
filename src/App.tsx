@@ -1,12 +1,17 @@
-import { Button } from "@/components/ui/button";
+import { Suspense } from "react";
+import AppRouter from "./router/router";
+import { Loader2 } from "lucide-react";
 
 export default function App() {
   return (
-    <div className="p-10 space-x-4 bg-white">
-      <Button>기본</Button>
-      <Button variant="outline">아웃라인</Button>
-      <Button variant="destructive">위험</Button>
-      <div className="bg-red-500 text-white p-4">Tailwind 됨?</div>
-    </div>
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center h-screen">
+          <Loader2 className="w-10 h-10 animate-spin text-muted-foreground" />
+        </div>
+      }
+    >
+      <AppRouter />
+    </Suspense>
   );
 }
