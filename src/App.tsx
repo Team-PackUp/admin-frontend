@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Suspense } from "react";
 import AppRouter from "./router/router";
 import { Loader2 } from "lucide-react";
+import { Toaster } from "./components/ui/toaster";
 
 const queryClient = new QueryClient();
 
@@ -16,6 +17,7 @@ export default function App() {
         }
       >
         <AppRouter />
+        <Toaster />
       </Suspense>
     </QueryClientProvider>
   );

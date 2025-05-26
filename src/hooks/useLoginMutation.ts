@@ -3,11 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { login } from "@/api/login";
 import { useAuthStore } from "@/stores/authStore";
 import type { LoginRequest, LoginResponse } from "@/@types/auth.types";
+import { useToast } from "./use-toast";
 
 export const useLoginMutation = () => {
   const navigate = useNavigate();
   const setLogin = useAuthStore((state) => state.login);
   const setLogout = useAuthStore((state) => state.logout);
+  const { toast } = useToast();
 
   return useMutation<LoginResponse, Error, LoginRequest>({
     mutationFn: login,
@@ -15,9 +17,15 @@ export const useLoginMutation = () => {
       localStorage.setItem("accessToken", accessToken);
       setLogin(accessToken);
     },
-    onError: () => {
+    onError: (error) => {
       setLogout();
-      // TODO: 토스트 띄우기 or 에러 상태 업데이트
+
+      toast({
+        title: "로그인 실패",
+        description:
+          error.message || "아이디 또는 비밀번호가 올바르지 않습니다.",
+        variant: "destructive",
+      });
     },
     onSettled: () => {
       navigate("/dashboard");
