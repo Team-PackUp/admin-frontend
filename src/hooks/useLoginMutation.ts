@@ -16,6 +16,7 @@ export const useLoginMutation = () => {
     onSuccess: ({ accessToken }) => {
       localStorage.setItem("accessToken", accessToken);
       setLogin(accessToken);
+      navigate("/dashboard");
     },
     onError: (error) => {
       setLogout();
@@ -26,9 +27,6 @@ export const useLoginMutation = () => {
           error.message || "아이디 또는 비밀번호가 올바르지 않습니다.",
         variant: "destructive",
       });
-    },
-    onSettled: () => {
-      navigate("/dashboard");
     },
   });
 };
