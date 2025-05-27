@@ -3,7 +3,7 @@ import { apiClient } from "./apiClient";
 export const refreshAccessToken = async (): Promise<string | null> => {
   try {
     const response = await apiClient.post(
-      "/api/auth/refresh",
+      "/auth/refresh",
       {},
       {
         withCredentials: true,
