@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "@/stores/authStore";
 
 const NAV_ITEMS = [
   { name: "대시보드", path: "/dashboard" },
@@ -13,28 +14,40 @@ const NAV_ITEMS = [
 
 export default function Header() {
   const navigate = useNavigate();
+  const logout = useAuthStore((state) => state.logout);
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   return (
     <header className="bg-white shadow px-6 py-4 sticky top-0 z-10">
       <div className="flex justify-between items-center max-w-screen-xl mx-auto">
-        <h1
-          className="text-2xl font-bold text-primary cursor-pointer"
-          onClick={() => navigate("/dashboard")}
-        >
-          PACKUP ADMIN
-        </h1>
-        <nav className="flex flex-wrap gap-3 text-sm md:text-base">
-          {NAV_ITEMS.map(({ name, path }) => (
-            <Button
-              key={path}
-              variant="ghost"
-              className="hover:text-primary px-2"
-              onClick={() => navigate(path)}
-            >
-              {name}
-            </Button>
-          ))}
-        </nav>
+        <div className="flex items-center gap-10">
+          <h1
+            className="text-2xl font-bold text-primary cursor-pointer"
+            onClick={() => navigate("/dashboard")}
+          >
+            PACKUP ADMIN
+          </h1>
+          <nav className="flex flex-wrap gap-3 text-sm md:text-base">
+            {NAV_ITEMS.map(({ name, path }) => (
+              <Button
+                key={path}
+                variant="ghost"
+                className="hover:text-primary px-2"
+                onClick={() => navigate(path)}
+              >
+                {name}
+              </Button>
+            ))}
+          </nav>
+        </div>
+
+        <Button variant="outline" size="sm" onClick={handleLogout}>
+          로그아웃
+        </Button>
       </div>
     </header>
   );
