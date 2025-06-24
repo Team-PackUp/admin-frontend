@@ -1,6 +1,8 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
+import fs from "fs";
+import mkcert from "vite-plugin-mkcert";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -9,5 +11,9 @@ export default defineConfig({
       "@": path.resolve(__dirname, "src"),
     },
   },
-  plugins: [react()],
+  plugins: [mkcert(), react()],
+  server: {
+    host: "localhost",
+    port: 5173,
+  },
 });
