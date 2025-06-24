@@ -1,4 +1,3 @@
-// src/pages/settings/components/NoticeEditorDialog.tsx
 import {
   Dialog,
   DialogContent,
@@ -8,6 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useState } from "react";
@@ -15,6 +15,8 @@ import { useState } from "react";
 export default function NoticeEditorDialog() {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
+  const [sendFcm, setSendFcm] = useState(false);
+  const [isUrgent, setIsUrgent] = useState(false);
 
   const editor = useEditor({
     extensions: [StarterKit],
@@ -26,12 +28,16 @@ export default function NoticeEditorDialog() {
     const noticeData = {
       title,
       content: contentDelta,
+      sendFcm,
+      isUrgent,
     };
 
     console.log("📢 저장할 공지사항 데이터:", noticeData);
 
     setOpen(false);
     setTitle("");
+    setSendFcm(false);
+    setIsUrgent(false);
     editor?.commands.clearContent();
   };
 
@@ -51,6 +57,23 @@ export default function NoticeEditorDialog() {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
+
+          <div className="flex gap-6">
+            <label className="flex items-center gap-2 text-sm">
+              <Checkbox
+                checked={sendFcm}
+                onCheckedChange={(val) => setSendFcm(Boolean(val))}
+              />
+              FCM 발송
+            </label>
+            <label className="flex items-center gap-2 text-sm">
+              <Checkbox
+                checked={isUrgent}
+                onCheckedChange={(val) => setIsUrgent(Boolean(val))}
+              />
+              긴급 공지
+            </label>
+          </div>
 
           <div className="border border-input bg-white rounded-md h-[300px] overflow-y-auto px-3 py-2">
             <EditorContent
