@@ -1,4 +1,3 @@
-// src/pages/settings/SystemSettingsPage.tsx
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import NoticeEditorDialog from "./notice/NoticeEditorDialog";
 
 export default function SystemSettingsPage() {
   return (
@@ -21,7 +21,8 @@ export default function SystemSettingsPage() {
               사용자 앱/웹에 노출될 공지사항을 관리합니다.
             </p>
           </div>
-          <Button size="sm">+ 공지 추가</Button>
+          <NoticeEditorDialog />
+          {/* <Button size="sm">+ 공지 추가</Button> */}
         </div>
 
         <Card>

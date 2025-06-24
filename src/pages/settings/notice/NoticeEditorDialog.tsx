@@ -30,7 +30,6 @@ export default function NoticeEditorDialog() {
 
     console.log("📢 저장할 공지사항 데이터:", noticeData);
 
-    // TODO: API 요청 등 처리
     setOpen(false);
     setTitle("");
     editor?.commands.clearContent();
@@ -53,8 +52,11 @@ export default function NoticeEditorDialog() {
             onChange={(e) => setTitle(e.target.value)}
           />
 
-          <div className="border rounded-md p-2 min-h-[200px]">
-            <EditorContent editor={editor} />
+          <div className="border border-input bg-white rounded-md h-[300px] overflow-y-auto px-3 py-2">
+            <EditorContent
+              editor={editor}
+              className="prose max-w-none [&>*]:outline-none [&>*]:focus:outline-none"
+            />
           </div>
 
           <div className="flex justify-end">
