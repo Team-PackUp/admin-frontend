@@ -120,9 +120,9 @@ export default function SystemSettingsPage() {
                 <SelectValue placeholder="언어 선택" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="ko">한국어</SelectItem>
-                <SelectItem value="en">영어</SelectItem>
-                <SelectItem value="jp">일본어</SelectItem>
+                <SelectItem value="한국어">한국어</SelectItem>
+                <SelectItem value="영어">영어</SelectItem>
+                <SelectItem value="일본어">일본어</SelectItem>
               </SelectContent>
             </Select>
 
