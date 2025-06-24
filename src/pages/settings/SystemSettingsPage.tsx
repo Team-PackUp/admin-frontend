@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,72 +9,99 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import NoticeEditorDialog from "./notice/NoticeEditorDialog";
+import NoticeList from "./notice/NoticeList";
 
 export default function SystemSettingsPage() {
+  const [notices, setNotices] = useState([
+    {
+      id: "1",
+      title: "여름철 운영시간 변경 안내",
+      sendFcm: true,
+      createdAt: "2025-06-22T10:00:00",
+      content: { ops: [{ insert: "본문 예시입니다.\n" }] },
+      isUrgent: false,
+    },
+    {
+      id: "1",
+      title: "여름철 운영시간 변경 안내",
+      sendFcm: true,
+      createdAt: "2025-06-22T10:00:00",
+      content: { ops: [{ insert: "본문 예시입니다.\n" }] },
+      isUrgent: false,
+    },
+    {
+      id: "1",
+      title: "여름철 운영시간 변경 안내",
+      sendFcm: true,
+      createdAt: "2025-06-22T10:00:00",
+      content: { ops: [{ insert: "본문 예시입니다.\n" }] },
+      isUrgent: false,
+    },
+    // ...더미 데이터
+  ]);
+  const [page, setPage] = useState(1);
+  const [createOpen, setCreateOpen] = useState(false);
+  const pageSize = 10;
+
+  const totalPages = 3;
+
+  const handleDelete = (id: string) => {
+    setNotices((prev) => prev.filter((n) => n.id !== id));
+  };
+
+  const handleUpdate = (updated: any) => {
+    setNotices((prev) =>
+      prev.map((n) => (n.id === updated.id ? { ...n, ...updated } : n))
+    );
+  };
+
   return (
     <div className="space-y-12">
-      {/* 공지사항 관리 */}
       <section className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-semibold">📢 공지사항 관리</h2>
-            <p className="text-sm text-muted-foreground">
-              사용자 앱/웹에 노출될 공지사항을 관리합니다.
-            </p>
-          </div>
-          <NoticeEditorDialog />
-          {/* <Button size="sm">+ 공지 추가</Button> */}
+        <div>
+          <h2 className="text-2xl font-semibold">📢 공지사항 관리</h2>
+          <p className="text-sm text-muted-foreground">
+            사용자 앱/웹에 노출될 공지사항을 관리합니다.
+          </p>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>공지사항 목록</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {/* 공지사항 테이블 (더미 데이터로 구조만 표시) */}
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b">
-                    <th className="text-left p-2">제목</th>
-                    <th className="text-left p-2">노출 여부</th>
-                    <th className="text-left p-2">작성일</th>
-                    <th className="text-left p-2">관리</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-b">
-                    <td className="p-2">여름철 운영시간 변경 안내</td>
-                    <td className="p-2">노출</td>
-                    <td className="p-2">2025-06-22</td>
-                    <td className="p-2 space-x-2">
-                      <Button size="sm" variant="outline">
-                        수정
-                      </Button>
-                      <Button size="sm" variant="destructive">
-                        삭제
-                      </Button>
-                    </td>
-                  </tr>
-                  {/* ... */}
-                </tbody>
-              </table>
-            </div>
+        <div className="flex justify-end mb-2">
+          <Button size="sm" onClick={() => setCreateOpen(true)}>
+            + 공지 등록
+          </Button>
+        </div>
 
-            {/* 페이징 버튼 (임시) */}
-            <div className="flex justify-end mt-4 gap-2">
-              <Button size="sm" variant="outline">
-                이전
-              </Button>
-              <Button size="sm" variant="outline">
-                다음
-              </Button>
-            </div>
+        <NoticeEditorDialog
+          mode="create"
+          open={createOpen}
+          onClose={() => setCreateOpen(false)}
+          onSubmit={(newNotice) => {
+            setNotices((prev) => [
+              {
+                ...newNotice,
+                id: Date.now().toString(),
+                createdAt: new Date().toISOString(),
+              },
+              ...prev,
+            ]);
+            setCreateOpen(false);
+          }}
+        />
+
+        <Card>
+          <CardContent className="pt-4">
+            <NoticeList
+              data={notices}
+              totalPages={totalPages}
+              page={page}
+              onPageChange={setPage}
+              onDelete={handleDelete}
+              onUpdate={handleUpdate}
+            />
           </CardContent>
         </Card>
       </section>
 
-      {/* 다국어 설정 */}
       <section className="space-y-4">
         <div>
           <h2 className="text-2xl font-semibold">🌐 다국어 지원 설정</h2>

@@ -35,11 +35,12 @@ type Props = {
 
 export default function NoticeEditorDialog({
   mode,
-  open = true,
+  open,
   initialData,
   onClose,
   onSubmit,
 }: Props) {
+  const controlled = open !== undefined;
   const [title, setTitle] = useState(initialData?.title ?? "");
   const [sendFcm, setSendFcm] = useState(initialData?.sendFcm ?? false);
   const [isUrgent, setIsUrgent] = useState(initialData?.isUrgent ?? false);
@@ -73,7 +74,7 @@ export default function NoticeEditorDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog open={controlled ? open : undefined} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>

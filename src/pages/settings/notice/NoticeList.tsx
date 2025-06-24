@@ -45,30 +45,25 @@ export default function NoticeList({
         />
       )}
 
-      <div className="border rounded-md">
-        <div className="grid grid-cols-4 gap-4 px-4 py-2 bg-muted text-sm font-semibold">
-          <div>제목</div>
-          <div>FCM 여부</div>
-          <div>작성일</div>
-          <div className="text-right">관리</div>
-        </div>
-
+      <div className="space-y-2">
         {data.map((notice) => (
           <div
             key={notice.id}
             onClick={() => setEditingNotice(notice)}
-            className="grid grid-cols-4 gap-4 px-4 py-2 border-t text-sm hover:bg-accent cursor-pointer"
+            className="p-4 border rounded-md hover:bg-accent transition cursor-pointer"
           >
-            <div>{notice.title}</div>
-            <div>
-              {notice.sendFcm ? (
-                <Badge variant="default">O</Badge>
-              ) : (
-                <Badge variant="secondary">X</Badge>
-              )}
-            </div>
-            <div>{new Date(notice.createdAt).toLocaleDateString()}</div>
-            <div className="text-right">
+            {/* 제목 */}
+            <div className="text-base font-semibold mb-1">{notice.title}</div>
+
+            {/* 하단 정보 및 삭제 버튼 */}
+            <div className="flex justify-between items-center text-sm text-muted-foreground">
+              <div className="space-x-4">
+                <span>
+                  작성일: {new Date(notice.createdAt).toLocaleDateString()}
+                </span>
+                <span>FCM: {notice.sendFcm ? "O" : "X"}</span>
+                <span>긴급: {notice.isUrgent ? "O" : "X"}</span>
+              </div>
               <Button
                 variant="destructive"
                 size="sm"
@@ -84,7 +79,7 @@ export default function NoticeList({
         ))}
       </div>
 
-      {/* Pagination Controls */}
+      {/* Pagination */}
       <div className="flex justify-center gap-2 mt-4">
         <Button
           variant="outline"
