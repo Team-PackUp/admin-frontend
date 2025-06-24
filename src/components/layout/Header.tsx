@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/stores/authStore";
 
 const NAV_ITEMS = [
-  { name: "대시보드", path: "/dashboard" },
   { name: "사용자 관리", path: "/users" },
   { name: "가이드 관리", path: "/guides" },
   { name: "투어 콘텐츠", path: "/tours" },

@@ -8,6 +8,7 @@ import {
 import { lazy } from "react";
 import RequireAuth from "@/components/auth/RequireAuth";
 import AdminLayout from "@/components/layout/AdminLayout";
+import SystemSettingsPage from "@/pages/settings/SystemSettingsPage";
 
 const LoginPage = lazy(() => import("@/pages/auth/LoginPage"));
 const DashboardPage = lazy(() => import("@/pages/dashboard/DashboardPage"));
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
       {
         path: "/dashboard",
         element: <DashboardPage />,
+      },
+      {
+        path: "/settings",
+        element: <SystemSettingsPage />,
       },
       // 여기에 추가 페이지들 확장 가능
       // { path: "/users", element: <UsersPage /> }
