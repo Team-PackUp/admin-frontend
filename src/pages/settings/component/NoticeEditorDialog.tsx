@@ -11,6 +11,7 @@ import { useCreateNotice } from "@/hooks/useCreateNotice";
 import { useEffect, useRef, useState } from "react";
 import ReactQuill, { Quill } from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
+import { useToast } from "@/hooks/use-toast";
 
 type Mode = "create" | "edit";
 
@@ -20,7 +21,7 @@ type Props = {
   initialData?: {
     id?: string;
     title: string;
-    content: any; // Delta format
+    content: any;
     sendFcm: boolean;
     isUrgent: boolean;
   };
@@ -60,6 +61,8 @@ export default function NoticeEditorDialog({
     setEditorValue(initialData?.content ?? "");
   }, [initialData]);
 
+  const { toast } = useToast();
+
   const handleSubmit = () => {
     const delta = editorRef.current?.getEditor().getContents();
 
@@ -81,6 +84,16 @@ export default function NoticeEditorDialog({
         },
         {
           onSuccess: () => {
+            toast({
+              title: "공지사항 등록 완료",
+              description: "공지사항이 등록되었습니다.",
+            });
+
+            setTitle("");
+            setEditorValue("");
+            setSendFcm(false);
+            setIsUrgent(false);
+
             onSubmit?.(payload);
             onClose();
           },
