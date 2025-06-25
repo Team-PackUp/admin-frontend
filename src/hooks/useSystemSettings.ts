@@ -8,7 +8,7 @@ export const useSystemSettings = () => {
   });
 
   const mutation = useMutation({
-    mutationFn: (code: string) => SystemSettingAPI.updateLanguage(code),
+    mutationFn: (language: string) => SystemSettingAPI.updateLanguage(language),
     onSuccess: () => {
       refetch();
     },

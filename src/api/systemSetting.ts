@@ -17,7 +17,7 @@ export const SystemSettingAPI = {
     return response.data;
   },
 
-  updateLanguage: async (code: string): Promise<void> => {
-    return apiClient.put("/system/language", { code });
+  updateLanguage: async (language: string): Promise<void> => {
+    return apiClient.put("/system/language", { language });
   },
 };

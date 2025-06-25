@@ -76,9 +76,7 @@ export default function SystemSettingsPage() {
   };
 
   useEffect(() => {
-    console.log(currentLanguage, "ㅁㄴㅇ");
     if (currentLanguage) {
-      console.log(currentLanguage, "ㅁㄴㅇ");
       setSelectedLang(currentLanguage);
     }
   }, [currentLanguage]);
