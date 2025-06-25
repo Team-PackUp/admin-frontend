@@ -29,6 +29,7 @@ export const attachAuthInterceptors = (client: AxiosInstance) => {
 
         localStorage.removeItem("accessToken");
         // 이부분 navigate 로 해야 하나..
+
         window.location.href = "/login";
       }
 
