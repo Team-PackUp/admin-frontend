@@ -1,16 +1,10 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import NoticeEditorDialog from "./notice/NoticeEditorDialog";
-import NoticeList from "./notice/NoticeList";
+import NoticeEditorDialog from "./component/NoticeEditorDialog";
+import NoticeList from "./component/NoticeList";
 import { useSystemSettings } from "@/hooks/useSystemSettings";
+import LanguageSettingCard from "./component/LanguageSettingCard";
 
 export default function SystemSettingsPage() {
   const [notices, setNotices] = useState([
@@ -135,35 +129,7 @@ export default function SystemSettingsPage() {
             앱 및 웹에서 노출되는 다국어 텍스트를 관리합니다.
           </p>
         </div>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>언어 선택</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Select value={selectedLang} onValueChange={setSelectedLang}>
-              <SelectTrigger className="w-[200px]">
-                <SelectValue placeholder="언어 선택" />
-              </SelectTrigger>
-              <SelectContent>
-                {languageList.map((lang) => (
-                  <SelectItem key={lang.code} value={lang.code}>
-                    {lang.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Button
-              size="sm"
-              className="mt-2"
-              onClick={handleSave}
-              disabled={isUpdating || selectedLang === currentLanguage}
-            >
-              {isUpdating ? "저장 중..." : "저장"}
-            </Button>
-          </CardContent>
-        </Card>
+        <LanguageSettingCard />
       </section>
     </div>
   );
