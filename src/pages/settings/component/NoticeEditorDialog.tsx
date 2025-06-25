@@ -7,10 +7,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useEditor, EditorContent } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import { useEffect, useState } from "react";
 import { useCreateNotice } from "@/hooks/useCreateNotice";
+import { useEffect, useRef, useState } from "react";
+import ReactQuill, { Quill } from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
 
 type Mode = "create" | "edit";
 
@@ -20,7 +20,7 @@ type Props = {
   initialData?: {
     id?: string;
     title: string;
-    content: any;
+    content: any; // Delta format
     sendFcm: boolean;
     isUrgent: boolean;
   };
@@ -45,30 +45,28 @@ export default function NoticeEditorDialog({
   const [title, setTitle] = useState(initialData?.title ?? "");
   const [sendFcm, setSendFcm] = useState(initialData?.sendFcm ?? false);
   const [isUrgent, setIsUrgent] = useState(initialData?.isUrgent ?? false);
+  const [editorValue, setEditorValue] = useState<any>(
+    initialData?.content ?? ""
+  );
 
   const { mutate: createNotice, isPending } = useCreateNotice();
 
-  const editor = useEditor({
-    extensions: [StarterKit],
-    content: initialData?.content ?? "",
-  });
+  const editorRef = useRef<ReactQuill | null>(null);
 
   useEffect(() => {
     setTitle(initialData?.title ?? "");
     setSendFcm(initialData?.sendFcm ?? false);
     setIsUrgent(initialData?.isUrgent ?? false);
-    if (editor && initialData?.content) {
-      editor.commands.setContent(initialData.content);
-    }
-  }, [initialData, editor]);
+    setEditorValue(initialData?.content ?? "");
+  }, [initialData]);
 
   const handleSubmit = () => {
-    const content = editor?.getJSON();
+    const delta = editorRef.current?.getEditor().getContents();
 
     const payload = {
       id: initialData?.id,
       title,
-      content,
+      content: delta,
       sendFcm,
       isUrgent,
     };
@@ -77,7 +75,7 @@ export default function NoticeEditorDialog({
       createNotice(
         {
           title,
-          content,
+          content: delta,
           sendFcm,
           isUrgent,
         },
@@ -95,7 +93,7 @@ export default function NoticeEditorDialog({
     }
 
     if (mode === "edit") {
-      onSubmit?.(payload); // 수정은 나중에 실제 API로 연결
+      onSubmit?.(payload); // 수정 API는 따로 구현
       onClose();
     }
   };
@@ -134,9 +132,14 @@ export default function NoticeEditorDialog({
           </div>
 
           <div className="border border-input bg-white rounded-md h-[300px] overflow-y-auto px-3 py-2">
-            <EditorContent
-              editor={editor}
-              className="prose max-w-none [&>*]:outline-none [&>*]:focus:outline-none"
+            <ReactQuill
+              ref={editorRef}
+              value={editorValue}
+              onChange={(_, __, ___, editor) => {
+                setEditorValue(editor.getContents());
+              }}
+              theme="snow"
+              className="h-full"
             />
           </div>
 
