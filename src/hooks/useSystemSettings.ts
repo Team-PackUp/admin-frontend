@@ -2,7 +2,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { SystemSettingAPI } from "@/api/systemSetting";
 
 export const useSystemSettings = () => {
-  const query = useQuery({
+  const { data, isLoading, refetch } = useQuery({
     queryKey: ["systemSettings"],
     queryFn: SystemSettingAPI.fetchSettings,
   });
@@ -10,12 +10,13 @@ export const useSystemSettings = () => {
   const mutation = useMutation({
     mutationFn: (code: string) => SystemSettingAPI.updateLanguage(code),
     onSuccess: () => {
-      query.refetch();
+      refetch();
     },
   });
 
   return {
-    ...query,
+    currentLanguage: data?.language ?? "",
+    isLoading,
     updateLanguage: mutation.mutate,
     isUpdating: mutation.isPending,
   };

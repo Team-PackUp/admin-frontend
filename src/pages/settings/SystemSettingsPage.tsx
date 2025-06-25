@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/select";
 import NoticeEditorDialog from "./notice/NoticeEditorDialog";
 import NoticeList from "./notice/NoticeList";
+import { useSystemSettings } from "@/hooks/useSystemSettings";
 
 export default function SystemSettingsPage() {
   const [notices, setNotices] = useState([
@@ -22,7 +23,7 @@ export default function SystemSettingsPage() {
       isUrgent: false,
     },
     {
-      id: "1",
+      id: "2",
       title: "여름철 운영시간 변경 안내",
       sendFcm: true,
       createdAt: "2025-06-22T10:00:00",
@@ -30,7 +31,7 @@ export default function SystemSettingsPage() {
       isUrgent: false,
     },
     {
-      id: "1",
+      id: "3",
       title: "여름철 운영시간 변경 안내",
       sendFcm: true,
       createdAt: "2025-06-22T10:00:00",
@@ -39,11 +40,24 @@ export default function SystemSettingsPage() {
     },
     // ...더미 데이터
   ]);
+
+  const languageList = [
+    { code: "한국어", name: "한국어" },
+    { code: "영어", name: "영어" },
+    { code: "중국어", name: "중국어" },
+    { code: "일본어", name: "일본어" },
+  ];
+
   const [page, setPage] = useState(1);
   const [createOpen, setCreateOpen] = useState(false);
-  const pageSize = 10;
 
+  const pageSize = 10;
   const totalPages = 3;
+
+  const { currentLanguage, isLoading, updateLanguage, isUpdating } =
+    useSystemSettings();
+
+  const [selectedLang, setSelectedLang] = useState("");
 
   const handleDelete = (id: string) => {
     setNotices((prev) => prev.filter((n) => n.id !== id));
@@ -54,6 +68,20 @@ export default function SystemSettingsPage() {
       prev.map((n) => (n.id === updated.id ? { ...n, ...updated } : n))
     );
   };
+
+  const handleSave = () => {
+    if (selectedLang && selectedLang !== currentLanguage) {
+      updateLanguage(selectedLang);
+    }
+  };
+
+  useEffect(() => {
+    console.log(currentLanguage, "ㅁㄴㅇ");
+    if (currentLanguage) {
+      console.log(currentLanguage, "ㅁㄴㅇ");
+      setSelectedLang(currentLanguage);
+    }
+  }, [currentLanguage]);
 
   return (
     <div className="space-y-12">
@@ -115,19 +143,26 @@ export default function SystemSettingsPage() {
             <CardTitle>언어 선택</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Select defaultValue="ko">
+            <Select value={selectedLang} onValueChange={setSelectedLang}>
               <SelectTrigger className="w-[200px]">
                 <SelectValue placeholder="언어 선택" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="한국어">한국어</SelectItem>
-                <SelectItem value="영어">영어</SelectItem>
-                <SelectItem value="일본어">일본어</SelectItem>
+                {languageList.map((lang) => (
+                  <SelectItem key={lang.code} value={lang.code}>
+                    {lang.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
 
-            <Button size="sm" className="mt-2">
-              저장
+            <Button
+              size="sm"
+              className="mt-2"
+              onClick={handleSave}
+              disabled={isUpdating || selectedLang === currentLanguage}
+            >
+              {isUpdating ? "저장 중..." : "저장"}
             </Button>
           </CardContent>
         </Card>

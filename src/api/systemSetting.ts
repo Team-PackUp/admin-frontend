@@ -1,5 +1,3 @@
-// ✅ 객체 기반 API 네임스페이스로 묶기
-
 import apiClient from "./apiClient";
 
 export interface SystemLanguage {
@@ -8,7 +6,7 @@ export interface SystemLanguage {
 }
 
 export interface SystemSettingsResponse {
-  languages: SystemLanguage[];
+  language: string;
   // timezones?: string[];
   // themeOptions?: string[];
 }
