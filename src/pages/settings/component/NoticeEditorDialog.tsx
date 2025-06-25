@@ -10,6 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useState } from "react";
+import { useCreateNotice } from "@/hooks/useCreateNotice";
 
 type Mode = "create" | "edit";
 
@@ -45,6 +46,8 @@ export default function NoticeEditorDialog({
   const [sendFcm, setSendFcm] = useState(initialData?.sendFcm ?? false);
   const [isUrgent, setIsUrgent] = useState(initialData?.isUrgent ?? false);
 
+  const { mutate: createNotice, isPending } = useCreateNotice();
+
   const editor = useEditor({
     extensions: [StarterKit],
     content: initialData?.content ?? "",
@@ -61,7 +64,8 @@ export default function NoticeEditorDialog({
 
   const handleSubmit = () => {
     const content = editor?.getJSON();
-    const result = {
+
+    const payload = {
       id: initialData?.id,
       title,
       content,
@@ -69,8 +73,31 @@ export default function NoticeEditorDialog({
       isUrgent,
     };
 
-    onSubmit?.(result);
-    onClose();
+    if (mode === "create") {
+      createNotice(
+        {
+          title,
+          content,
+          sendFcm,
+          isUrgent,
+        },
+        {
+          onSuccess: () => {
+            onSubmit?.(payload);
+            onClose();
+          },
+          onError: (err) => {
+            console.error("공지사항 등록 실패", err);
+            alert("공지사항 등록에 실패했습니다.");
+          },
+        }
+      );
+    }
+
+    if (mode === "edit") {
+      onSubmit?.(payload); // 수정은 나중에 실제 API로 연결
+      onClose();
+    }
   };
 
   return (
@@ -114,8 +141,8 @@ export default function NoticeEditorDialog({
           </div>
 
           <div className="flex justify-end">
-            <Button onClick={handleSubmit}>
-              {mode === "edit" ? "수정" : "저장"}
+            <Button onClick={handleSubmit} disabled={isPending}>
+              {isPending ? "저장 중..." : mode === "edit" ? "수정" : "저장"}
             </Button>
           </div>
         </div>
