@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import NoticeEditorDialog from "./NoticeEditorDialog";
 import {
   AlertDialog,
@@ -47,6 +46,7 @@ export default function NoticeList({
       {editingNotice && (
         <NoticeEditorDialog
           mode="edit"
+          open={Boolean(editingNotice)}
           initialData={editingNotice}
           onClose={() => setEditingNotice(null)}
           onSubmit={(updated) => {
@@ -63,10 +63,8 @@ export default function NoticeList({
             onClick={() => setEditingNotice(notice)}
             className="p-4 border rounded-md hover:bg-accent transition cursor-pointer"
           >
-            {/* 제목 */}
             <div className="text-base font-semibold mb-1">{notice.title}</div>
 
-            {/* 하단 정보 및 삭제 버튼 */}
             <div className="flex justify-between items-center text-sm text-muted-foreground">
               <div className="space-x-4">
                 <span>
@@ -75,39 +73,36 @@ export default function NoticeList({
                 <span>FCM: {notice.sendFcm ? "O" : "X"}</span>
                 <span>긴급: {notice.isUrgent ? "O" : "X"}</span>
               </div>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    삭제
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      정말로 삭제하시겠습니까?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      삭제 후 복구할 수 없습니다.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>취소</AlertDialogCancel>
-                    <AlertDialogAction onClick={() => onDelete(notice.id)}>
+              <div onClick={(e) => e.stopPropagation()}>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive" size="sm">
                       삭제
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        정말로 삭제하시겠습니까?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        삭제 후 복구할 수 없습니다.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>취소</AlertDialogCancel>
+                      <AlertDialogAction onClick={() => onDelete(notice.id)}>
+                        삭제
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Pagination */}
       <div className="flex justify-center gap-2 mt-4">
         <Button
           variant="outline"
