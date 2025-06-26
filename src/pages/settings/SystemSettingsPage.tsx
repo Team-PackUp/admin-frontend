@@ -2,54 +2,29 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import NoticeEditorDialog from "./component/NoticeEditorDialog";
+import { NOTICE_PAGE_SIZE } from "@/constants/pagination";
 import NoticeList from "./component/NoticeList";
 import { useSystemSettings } from "@/hooks/useSystemSettings";
+import { useNotices } from "@/hooks/useNotices";
 import LanguageSettingCard from "./component/LanguageSettingCard";
+import { useQueryClient } from "@tanstack/react-query";
+import type { Notice } from "@/api/notice";
 
 export default function SystemSettingsPage() {
-  const [notices, setNotices] = useState([
-    {
-      id: "1",
-      title: "여름철 운영시간 변경 안내",
-      sendFcm: true,
-      createdAt: "2025-06-22T10:00:00",
-      content: { ops: [{ insert: "본문 예시입니다.\n" }] },
-      isUrgent: false,
-    },
-    {
-      id: "2",
-      title: "여름철 운영시간 변경 안내",
-      sendFcm: true,
-      createdAt: "2025-06-22T10:00:00",
-      content: { ops: [{ insert: "본문 예시입니다.\n" }] },
-      isUrgent: false,
-    },
-    {
-      id: "3",
-      title: "여름철 운영시간 변경 안내",
-      sendFcm: true,
-      createdAt: "2025-06-22T10:00:00",
-      content: { ops: [{ insert: "본문 예시입니다.\n" }] },
-      isUrgent: false,
-    },
-    // ...더미 데이터
-  ]);
+  const [notices, setNotices] = useState<Notice[]>([]);
 
-  const languageList = [
-    { code: "한국어", name: "한국어" },
-    { code: "영어", name: "영어" },
-    { code: "중국어", name: "중국어" },
-    { code: "일본어", name: "일본어" },
-  ];
+  const queryClient = useQueryClient();
 
   const [page, setPage] = useState(1);
   const [createOpen, setCreateOpen] = useState(false);
 
-  const pageSize = 10;
-  const totalPages = 3;
-
   const { currentLanguage, isLoading, updateLanguage, isUpdating } =
     useSystemSettings();
+  const { data, isLoading: isNoticeLoading } = useNotices(
+    page,
+    NOTICE_PAGE_SIZE
+  );
+  const totalPages = data?.totalPages || 1;
 
   const [selectedLang, setSelectedLang] = useState("");
 
@@ -63,11 +38,11 @@ export default function SystemSettingsPage() {
     );
   };
 
-  const handleSave = () => {
-    if (selectedLang && selectedLang !== currentLanguage) {
-      updateLanguage(selectedLang);
+  useEffect(() => {
+    if (data?.content) {
+      setNotices(data.content);
     }
-  };
+  }, [data]);
 
   useEffect(() => {
     if (currentLanguage) {
@@ -95,29 +70,28 @@ export default function SystemSettingsPage() {
           mode="create"
           open={createOpen}
           onClose={() => setCreateOpen(false)}
-          onSubmit={(newNotice) => {
-            setNotices((prev) => [
-              {
-                ...newNotice,
-                id: Date.now().toString(),
-                createdAt: new Date().toISOString(),
-              },
-              ...prev,
-            ]);
+          onSubmit={() => {
+            queryClient.invalidateQueries({ queryKey: ["notices"] });
             setCreateOpen(false);
           }}
         />
 
         <Card>
           <CardContent className="pt-4">
-            <NoticeList
-              data={notices}
-              totalPages={totalPages}
-              page={page}
-              onPageChange={setPage}
-              onDelete={handleDelete}
-              onUpdate={handleUpdate}
-            />
+            {isNoticeLoading ? (
+              <p className="text-sm text-muted-foreground">
+                공지사항을 불러오는 중...
+              </p>
+            ) : (
+              <NoticeList
+                data={notices}
+                totalPages={totalPages}
+                page={page}
+                onPageChange={setPage}
+                onDelete={handleDelete}
+                onUpdate={handleUpdate}
+              />
+            )}
           </CardContent>
         </Card>
       </section>
