@@ -2,6 +2,17 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import NoticeEditorDialog from "./NoticeEditorDialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 type NoticeItem = {
   id: string;
@@ -64,16 +75,33 @@ export default function NoticeList({
                 <span>FCM: {notice.sendFcm ? "O" : "X"}</span>
                 <span>긴급: {notice.isUrgent ? "O" : "X"}</span>
               </div>
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onDelete(notice.id);
-                }}
-              >
-                삭제
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    삭제
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      정말로 삭제하시겠습니까?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      삭제 후 복구할 수 없습니다.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>취소</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => onDelete(notice.id)}>
+                      삭제
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </div>
         ))}

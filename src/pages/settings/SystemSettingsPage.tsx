@@ -4,16 +4,19 @@ import { Button } from "@/components/ui/button";
 import NoticeEditorDialog from "./component/NoticeEditorDialog";
 import { NOTICE_PAGE_SIZE } from "@/constants/pagination";
 import NoticeList from "./component/NoticeList";
+import { useToast } from "@/hooks/use-toast";
 import { useSystemSettings } from "@/hooks/useSystemSettings";
 import { useNotices } from "@/hooks/useNotices";
 import LanguageSettingCard from "./component/LanguageSettingCard";
 import { useQueryClient } from "@tanstack/react-query";
 import type { Notice } from "@/api/notice";
+import { useDeleteNotice } from "@/hooks/useDeleteNotice";
 
 export default function SystemSettingsPage() {
   const [notices, setNotices] = useState<Notice[]>([]);
 
   const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   const [page, setPage] = useState(1);
   const [createOpen, setCreateOpen] = useState(false);
@@ -26,10 +29,26 @@ export default function SystemSettingsPage() {
   );
   const totalPages = data?.totalPages || 1;
 
+  const deleteNotice = useDeleteNotice();
+
   const [selectedLang, setSelectedLang] = useState("");
 
   const handleDelete = (id: string) => {
-    setNotices((prev) => prev.filter((n) => n.id !== id));
+    deleteNotice.mutate(id, {
+      onSuccess: () => {
+        toast({
+          title: "공지사항 삭제 완료",
+          description: "공지사항이 삭제되었습니다.",
+        });
+      },
+      onError: () => {
+        toast({
+          title: "삭제 실패",
+          description: "공지사항 삭제 중 오류가 발생했습니다.",
+          variant: "destructive",
+        });
+      },
+    });
   };
 
   const handleUpdate = (updated: any) => {
