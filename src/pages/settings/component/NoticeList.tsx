@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { format } from "date-fns";
 import NoticeEditorDialog from "./NoticeEditorDialog";
 import {
   AlertDialog,
@@ -68,7 +69,7 @@ export default function NoticeList({
             <div className="flex justify-between items-center text-sm text-muted-foreground">
               <div className="space-x-4">
                 <span>
-                  작성일: {new Date(notice.createdAt).toLocaleDateString()}
+                  작성일: {format(new Date(notice.createdAt), "yyyy-MM-dd")}
                 </span>
                 <span>FCM: {notice.sendFcm ? "O" : "X"}</span>
                 <span>긴급: {notice.isUrgent ? "O" : "X"}</span>
