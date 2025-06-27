@@ -9,6 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 
 export type UserDetail = {
@@ -18,6 +19,8 @@ export type UserDetail = {
   age: number;
   nation: string;
   banFlag: "Y" | "N";
+  banReason?: string;
+  banAdminId?: string;
   withdrawFlag: "Y" | "N";
   createdAt: string;
 };
@@ -30,10 +33,22 @@ type Props = {
 
 export default function UserDetailDialog({ open, onClose, user }: Props) {
   const [ban, setBan] = useState(user.banFlag === "Y");
+  const [banReason, setBanReason] = useState(
+    user.banFlag === "Y" ? user.banReason ?? "" : ""
+  );
   const [withdraw, setWithdraw] = useState(user.withdrawFlag === "Y");
 
+  const handleBanChange = (checked: boolean) => {
+    setBan(checked);
+    if (!checked) setBanReason("");
+  };
+
   const handleSave = () => {
-    console.log("Saving status:", { ban, withdraw });
+    console.log("Saving status:", {
+      ban,
+      banReason,
+      withdraw,
+    });
     onClose();
   };
 
@@ -94,15 +109,38 @@ export default function UserDetailDialog({ open, onClose, user }: Props) {
                   className="h-8 px-2"
                 />
               </div>
-              <div className="flex items-center justify-between col-span-1 pt-2">
-                <Label className="text-muted-foreground">접근 제한</Label>
-                <Switch
-                  checked={ban}
-                  onCheckedChange={setBan}
-                  className="scale-90"
-                />
+
+              <div className="col-span-2 pt-2">
+                <div className="flex items-center justify-between mb-1">
+                  <Label className="text-muted-foreground">접근 제한</Label>
+                  <Switch
+                    checked={ban}
+                    onCheckedChange={handleBanChange}
+                    className="scale-90"
+                  />
+                </div>
+
+                {ban && (
+                  <div className="mt-2">
+                    <Label className="text-muted-foreground mb-1 block"></Label>
+                    <Textarea
+                      value={banReason}
+                      onChange={(e) => setBanReason(e.target.value)}
+                      placeholder="접근 제한 사유를 입력하세요."
+                      readOnly={user.banFlag === "Y" && !ban}
+                      className="min-h-[80px]"
+                    />
+                    {user.banFlag === "Y" && user.banAdminId && (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        제한 조치 관리자:{" "}
+                        <span className="font-medium">{user.banAdminId}</span>
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
-              <div className="flex items-center justify-between col-span-1 pt-2">
+
+              <div className="flex items-center justify-between col-span-2 pt-2">
                 <Label className="text-muted-foreground">탈퇴 처리</Label>
                 <Switch
                   checked={withdraw}
@@ -113,7 +151,7 @@ export default function UserDetailDialog({ open, onClose, user }: Props) {
             </div>
 
             <div className="flex justify-end mt-4">
-              <Button size="sm" className="px-6">
+              <Button size="sm" className="px-6" onClick={handleSave}>
                 저장
               </Button>
             </div>

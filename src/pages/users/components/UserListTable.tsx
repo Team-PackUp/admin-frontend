@@ -27,6 +27,8 @@ type User = {
   age: number;
   nation: string;
   banFlag: "Y" | "N";
+  banReason?: string;
+  banAdminId?: string;
   withdrawFlag: "Y" | "N";
   createdAt: string;
 };
@@ -39,6 +41,8 @@ const mockUsers: User[] = Array.from({ length: 25 }).map((_, i) => ({
   age: 20 + (i % 10),
   nation: i % 2 === 0 ? "KR" : "US",
   banFlag: i % 5 === 0 ? "Y" : "N",
+  banReason: i % 5 === 0 ? "부적절한 행위로 인한 차단" : undefined,
+  banAdminId: i % 5 === 0 ? `admin${(i % 3) + 1}` : undefined,
   withdrawFlag: i % 7 === 0 ? "Y" : "N",
   createdAt: `2024-12-${String((i % 28) + 1).padStart(2, "0")}T12:00:00Z`,
 }));
@@ -122,9 +126,9 @@ export default function UserListTable() {
               <button
                 onClick={() => setPage(p)}
                 className={`
-            h-8 w-8 rounded-md text-sm font-medium
-            ${p === page ? "bg-primary text-white" : "hover:bg-muted"}
-          `}
+                  h-8 w-8 rounded-md text-sm font-medium
+                  ${p === page ? "bg-primary text-white" : "hover:bg-muted"}
+                `}
                 aria-current={p === page ? "page" : undefined}
               >
                 {p}
