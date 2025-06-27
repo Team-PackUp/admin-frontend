@@ -11,6 +11,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import UserDetailDialog from "./UserDetailDialog";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 type User = {
   id: number;
@@ -24,37 +31,30 @@ type User = {
   createdAt: string;
 };
 
-const mockUsers: User[] = [
-  {
-    id: 1,
-    email: "user1@example.com",
-    nickname: "홍길동",
-    joinType: "GOOGLE",
-    age: 29,
-    nation: "KR",
-    banFlag: "N",
-    withdrawFlag: "N",
-    createdAt: "2024-12-01T12:00:00Z",
-  },
-  {
-    id: 2,
-    email: "user2@example.com",
-    nickname: "JohnDoe",
-    joinType: "KAKAO",
-    age: 35,
-    nation: "US",
-    banFlag: "Y",
-    withdrawFlag: "N",
-    createdAt: "2025-01-15T09:30:00Z",
-  },
-];
+const mockUsers: User[] = Array.from({ length: 25 }).map((_, i) => ({
+  id: i + 1,
+  email: `user${i + 1}@example.com`,
+  nickname: `유저${i + 1}`,
+  joinType: i % 2 === 0 ? "GOOGLE" : "KAKAO",
+  age: 20 + (i % 10),
+  nation: i % 2 === 0 ? "KR" : "US",
+  banFlag: i % 5 === 0 ? "Y" : "N",
+  withdrawFlag: i % 7 === 0 ? "Y" : "N",
+  createdAt: `2024-12-${String((i % 28) + 1).padStart(2, "0")}T12:00:00Z`,
+}));
+
+const PAGE_SIZE = 10;
 
 export default function UserListTable() {
   const [users] = useState<User[]>(mockUsers);
+  const [page, setPage] = useState(1);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
+  const totalPages = Math.ceil(users.length / PAGE_SIZE);
+  const paginatedUsers = users.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
   return (
-    <div className="border rounded-md">
+    <div className="border rounded-md p-4">
       <Table>
         <TableHeader>
           <TableRow>
@@ -70,7 +70,7 @@ export default function UserListTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {users.map((user) => (
+          {paginatedUsers.map((user) => (
             <TableRow key={user.id}>
               <TableCell>{user.email}</TableCell>
               <TableCell>{user.nickname}</TableCell>
@@ -79,16 +79,16 @@ export default function UserListTable() {
               <TableCell>{user.nation}</TableCell>
               <TableCell>
                 {user.banFlag === "Y" ? (
-                  <Badge variant="destructive">차단됨</Badge>
+                  <Badge variant="destructive">차단</Badge>
                 ) : (
                   <Badge variant="secondary">정상</Badge>
                 )}
               </TableCell>
               <TableCell>
                 {user.withdrawFlag === "Y" ? (
-                  <Badge variant="outline">탈퇴</Badge>
+                  <Badge variant="outline">Y</Badge>
                 ) : (
-                  <Badge variant="default">활성</Badge>
+                  <Badge variant="default">N</Badge>
                 )}
               </TableCell>
               <TableCell>
@@ -108,7 +108,39 @@ export default function UserListTable() {
         </TableBody>
       </Table>
 
-      {/* 상세보기 다이얼로그 */}
+      <Pagination className="mt-4 flex justify-center">
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+              aria-disabled={page === 1}
+            />
+          </PaginationItem>
+
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+            <PaginationItem key={p}>
+              <button
+                onClick={() => setPage(p)}
+                className={`
+            h-8 w-8 rounded-md text-sm font-medium
+            ${p === page ? "bg-primary text-white" : "hover:bg-muted"}
+          `}
+                aria-current={p === page ? "page" : undefined}
+              >
+                {p}
+              </button>
+            </PaginationItem>
+          ))}
+
+          <PaginationItem>
+            <PaginationNext
+              onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+              aria-disabled={page === totalPages}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
+
       {selectedUser && (
         <UserDetailDialog
           open={!!selectedUser}

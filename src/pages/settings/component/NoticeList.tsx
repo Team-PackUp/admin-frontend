@@ -13,6 +13,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 type NoticeItem = {
   id: string;
@@ -104,27 +111,38 @@ export default function NoticeList({
         ))}
       </div>
 
-      <div className="flex justify-center gap-2 mt-4">
-        <Button
-          variant="outline"
-          size="sm"
-          disabled={page === 1}
-          onClick={() => onPageChange(page - 1)}
-        >
-          이전
-        </Button>
-        <span className="text-sm pt-1">
-          {page} / {totalPages}
-        </span>
-        <Button
-          variant="outline"
-          size="sm"
-          disabled={page === totalPages}
-          onClick={() => onPageChange(page + 1)}
-        >
-          다음
-        </Button>
-      </div>
+      <Pagination className="mt-4 flex justify-center">
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              onClick={() => onPageChange(Math.max(1, page - 1))}
+              aria-disabled={page === 1}
+            />
+          </PaginationItem>
+
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+            <PaginationItem key={p}>
+              <button
+                onClick={() => onPageChange(p)}
+                className={`
+            h-8 w-8 rounded-md text-sm font-medium
+            ${p === page ? "bg-primary text-white" : "hover:bg-muted"}
+          `}
+                aria-current={p === page ? "page" : undefined}
+              >
+                {p}
+              </button>
+            </PaginationItem>
+          ))}
+
+          <PaginationItem>
+            <PaginationNext
+              onClick={() => onPageChange(Math.min(totalPages, page + 1))}
+              aria-disabled={page === totalPages}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </>
   );
 }
