@@ -7,8 +7,6 @@ export interface SystemLanguage {
 
 export interface SystemSettingsResponse {
   language: string;
-  // timezones?: string[];
-  // themeOptions?: string[];
 }
 
 export const SystemSettingAPI = {
