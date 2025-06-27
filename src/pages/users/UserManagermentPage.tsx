@@ -1,9 +1,17 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import UserSearchForm from "./components/UserSearchForm";
 import UserListTable from "./components/UserListTable";
+// import { fetchUsers } from "@/api/user";
 
 export default function UserManagementPage() {
+  const [users, setUsers] = useState([]);
+
+  const handleSearch = async (type: "email" | "nickname", keyword: string) => {
+    // const response = await fetchUsers({ [type]: keyword });
+    // setUsers(response.data);
+  };
+
   return (
     <div className="space-y-12">
       <section className="space-y-4">
@@ -14,8 +22,11 @@ export default function UserManagementPage() {
           </p>
         </div>
 
+        <UserSearchForm onSearch={handleSearch} />
+
         <Card>
           <CardContent className="pt-4">
+            {/* <UserListTable users={users} /> */}
             <UserListTable />
           </CardContent>
         </Card>
