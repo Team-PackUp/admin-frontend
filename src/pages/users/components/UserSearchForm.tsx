@@ -18,6 +18,24 @@ export default function UserSearchForm({ onSearch }: Props) {
   const [searchType, setSearchType] = useState<UserSearchType>("email");
   const [keyword, setKeyword] = useState("");
 
+  // 비어있으면 전체 검색
+  const handleSearch = () => {
+    const trimmed = keyword.trim();
+
+    if (!trimmed) {
+      onSearch("email", "");
+      return;
+    }
+
+    onSearch(searchType, trimmed);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
+
   return (
     <div className="flex gap-4 items-center p-4 bg-white rounded-lg shadow-sm border border-border">
       <Select
@@ -38,10 +56,11 @@ export default function UserSearchForm({ onSearch }: Props) {
         placeholder="검색어 입력"
         value={keyword}
         onChange={(e) => setKeyword(e.target.value)}
+        onKeyDown={handleKeyDown}
         className="w-64"
       />
 
-      <Button onClick={() => onSearch(searchType, keyword)}>검색</Button>
+      <Button onClick={handleSearch}>검색</Button>
     </div>
   );
 }

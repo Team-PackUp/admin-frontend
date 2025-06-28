@@ -7,6 +7,7 @@ import type { UserSearchType } from "@/api/user";
 
 const PAGE_SIZE = 10;
 
+// 사용자는 create delete 가 없으니 useQuery 사용
 export default function UserManagementPage() {
   const [page, setPage] = useState(1);
   const [searchType, setSearchType] = useState<UserSearchType | undefined>();
