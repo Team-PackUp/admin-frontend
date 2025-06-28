@@ -8,23 +8,24 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState } from "react";
+import type { UserSearchType } from "@/api/user"; // "seq" | "email" | "nickname"
 
 type Props = {
-  onSearch: (type: "email" | "nickname", keyword: string) => void;
+  onSearch: (type: UserSearchType, keyword: string) => void;
 };
 
 export default function UserSearchForm({ onSearch }: Props) {
-  const [searchType, setSearchType] = useState<"email" | "nickname">("email");
+  const [searchType, setSearchType] = useState<UserSearchType>("email");
   const [keyword, setKeyword] = useState("");
 
   return (
     <div className="flex gap-4 items-center p-4 bg-white rounded-lg shadow-sm border border-border">
       <Select
         value={searchType}
-        onValueChange={(val) => setSearchType(val as "email" | "nickname")}
+        onValueChange={(val) => setSearchType(val as UserSearchType)}
       >
         <SelectTrigger className="w-40">
-          <SelectValue placeholder="검색 기준" />
+          <SelectValue />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="seq">사용자 번호로 검색</SelectItem>

@@ -2,14 +2,27 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import UserSearchForm from "./components/UserSearchForm";
 import UserListTable from "./components/UserListTable";
-// import { fetchUsers } from "@/api/user";
+import { useUsers } from "@/hooks/useUsers";
+import type { UserSearchType } from "@/api/user";
+
+const PAGE_SIZE = 10;
 
 export default function UserManagementPage() {
-  const [users, setUsers] = useState([]);
+  const [page, setPage] = useState(1);
+  const [searchType, setSearchType] = useState<UserSearchType | undefined>();
+  const [keyword, setKeyword] = useState<string | undefined>();
 
-  const handleSearch = async (type: "email" | "nickname", keyword: string) => {
-    // const response = await fetchUsers({ [type]: keyword });
-    // setUsers(response.data);
+  const { data, isLoading, isError } = useUsers(
+    page,
+    PAGE_SIZE,
+    searchType,
+    keyword
+  );
+
+  const handleSearch = (type: UserSearchType, keyword: string) => {
+    setSearchType(type);
+    setKeyword(keyword);
+    setPage(1); // 검색하면 1페이지로 가야함
   };
 
   return (
@@ -26,8 +39,20 @@ export default function UserManagementPage() {
 
         <Card>
           <CardContent className="pt-4">
-            {/* <UserListTable users={users} /> */}
-            <UserListTable />
+            {isLoading && <p>로딩 중...</p>}
+            {isError && (
+              <p className="text-destructive">
+                데이터를 불러오는 데 실패했습니다.
+              </p>
+            )}
+            {data && (
+              <UserListTable
+                users={data.content}
+                page={page}
+                totalPages={data.totalPages}
+                onPageChange={setPage}
+              />
+            )}
           </CardContent>
         </Card>
       </section>

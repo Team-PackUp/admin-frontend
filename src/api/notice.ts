@@ -17,7 +17,7 @@ export interface CreateNoticeRequest {
 }
 
 export interface NoticePageResponse {
-  items: Notice[];
+  content: Notice[];
   totalPages: number;
 }
 
@@ -27,9 +27,11 @@ export const NoticeAPI = {
   },
 
   getList: async (page: number, size: number): Promise<NoticePageResponse> => {
-    const response = await apiClient.get("/system/notices", {
-      params: { page: page - 1, size },
-    });
+    const params: Record<string, any> = {
+      page: page - 1,
+      size,
+    };
+    const response = await apiClient.get("/system/notices", { params });
     return response.data;
   },
 
