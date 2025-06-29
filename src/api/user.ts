@@ -57,6 +57,6 @@ export const UserAPI = {
     id: number,
     payload: UserStatusUpdateRequest
   ): Promise<void> => {
-    await apiClient.post(`/users/${id}/status`, payload);
+    await apiClient.patch(`/users/${id}/status`, payload);
   },
 };
