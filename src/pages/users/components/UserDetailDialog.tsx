@@ -3,6 +3,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
@@ -98,6 +99,9 @@ export default function UserDetailDialog({ open, onClose, user }: Props) {
       <DialogContent className="max-w-3xl">
         <DialogHeader>
           <DialogTitle>사용자 상세</DialogTitle>
+          <DialogDescription>
+            회원 상태를 수정하거나 예약 및 신고 이력을 확인할 수 있습니다.
+          </DialogDescription>
         </DialogHeader>
 
         <Tabs defaultValue="info" className="w-full mt-2">
