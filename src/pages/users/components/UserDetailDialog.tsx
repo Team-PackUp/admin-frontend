@@ -11,8 +11,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
+import { useUpdateUserStatus } from "@/hooks/useUpdateUserStatus";
+import { useToast } from "@/hooks/use-toast";
 
 export type UserDetail = {
+  id: number;
   email: string;
   nickname: string;
   joinType: string;
@@ -37,6 +40,18 @@ export default function UserDetailDialog({ open, onClose, user }: Props) {
     user.banFlag === "Y" ? user.banReason ?? "" : ""
   );
   const [withdraw, setWithdraw] = useState(user.withdrawFlag === "Y");
+  const { toast } = useToast();
+
+  const { mutate: updateUserStatus, isPending } = useUpdateUserStatus(
+    user.id,
+    () => {
+      toast({
+        title: "회원 정보 수정 완료",
+        description: "회원 정보가 수정되었습니다.",
+      });
+      onClose();
+    }
+  );
 
   const handleBanChange = (checked: boolean) => {
     setBan(checked);
@@ -44,12 +59,38 @@ export default function UserDetailDialog({ open, onClose, user }: Props) {
   };
 
   const handleSave = () => {
-    console.log("Saving status:", {
-      ban,
-      banReason,
-      withdraw,
-    });
-    onClose();
+    const payload: any = {};
+
+    const prevBan = user.banFlag === "Y";
+    const prevWithdraw = user.withdrawFlag === "Y";
+
+    if (ban !== prevBan) {
+      payload.ban = ban;
+      if (ban) payload.banReason = banReason;
+    }
+
+    if (withdraw !== prevWithdraw) {
+      payload.withdraw = withdraw;
+    }
+
+    if (Object.keys(payload).length === 0) {
+      toast({
+        title: "회원 정보 수정 실패",
+        description: "변경된 내용이 없습니다.",
+      });
+      onClose();
+      return;
+    }
+
+    if (ban && banReason.trim() === "") {
+      toast({
+        title: "회원 정보 수정 실패",
+        description: "밴 사유를 입력해주세요.",
+      });
+      return;
+    }
+
+    updateUserStatus(payload);
   };
 
   return (
@@ -122,12 +163,13 @@ export default function UserDetailDialog({ open, onClose, user }: Props) {
 
                 {ban && (
                   <div className="mt-2">
-                    <Label className="text-muted-foreground mb-1 block"></Label>
+                    <Label className="text-muted-foreground mb-1 block">
+                      제한 사유
+                    </Label>
                     <Textarea
                       value={banReason}
                       onChange={(e) => setBanReason(e.target.value)}
                       placeholder="접근 제한 사유를 입력하세요."
-                      readOnly={user.banFlag === "Y" && !ban}
                       className="min-h-[80px]"
                     />
                     {user.banFlag === "Y" && user.banAdminId && (
@@ -151,7 +193,12 @@ export default function UserDetailDialog({ open, onClose, user }: Props) {
             </div>
 
             <div className="flex justify-end mt-4">
-              <Button size="sm" className="px-6" onClick={handleSave}>
+              <Button
+                size="sm"
+                className="px-6"
+                onClick={handleSave}
+                disabled={isPending}
+              >
                 저장
               </Button>
             </div>

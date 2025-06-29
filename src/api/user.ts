@@ -19,6 +19,12 @@ export interface UserPageResponse {
   totalPages: number;
 }
 
+export interface UserStatusUpdateRequest {
+  ban?: boolean;
+  banReason?: string;
+  withdraw?: boolean;
+}
+
 export type UserSearchType = "seq" | "email" | "nickname";
 
 export const UserAPI = {
@@ -38,6 +44,7 @@ export const UserAPI = {
     }
 
     const response = await apiClient.get("/users", { params });
+    console.log(response.data);
     return response.data;
   },
 
@@ -46,15 +53,10 @@ export const UserAPI = {
     return data;
   },
 
-  banUser: async (id: number, reason: string): Promise<void> => {
-    await apiClient.post(`/users/${id}/ban`, { reason });
-  },
-
-  unbanUser: async (id: number): Promise<void> => {
-    await apiClient.post(`/users/${id}/unban`);
-  },
-
-  withdrawUser: async (id: number): Promise<void> => {
-    await apiClient.post(`/users/${id}/withdraw`);
+  updateUserStatus: async (
+    id: number,
+    payload: UserStatusUpdateRequest
+  ): Promise<void> => {
+    await apiClient.post(`/users/${id}/status`, payload);
   },
 };
