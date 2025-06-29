@@ -9,7 +9,7 @@ export interface User {
   nation: string;
   banFlag: "Y" | "N";
   banReason?: string;
-  banAdminId?: string;
+  banAdminName?: string;
   withdrawFlag: "Y" | "N";
   createdAt: string;
 }

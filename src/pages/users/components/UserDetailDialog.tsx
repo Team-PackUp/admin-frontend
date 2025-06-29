@@ -24,7 +24,7 @@ export type UserDetail = {
   nation: string;
   banFlag: "Y" | "N";
   banReason?: string;
-  banAdminId?: string;
+  banAdminName?: string;
   withdrawFlag: "Y" | "N";
   createdAt: string;
 };
@@ -176,10 +176,10 @@ export default function UserDetailDialog({ open, onClose, user }: Props) {
                       placeholder="접근 제한 사유를 입력하세요."
                       className="min-h-[80px]"
                     />
-                    {user.banFlag === "Y" && user.banAdminId && (
+                    {user.banFlag === "Y" && user.banAdminName && (
                       <p className="text-xs text-muted-foreground mt-1">
                         제한 조치 관리자:{" "}
-                        <span className="font-medium">{user.banAdminId}</span>
+                        <span className="font-medium">{user.banAdminName}</span>
                       </p>
                     )}
                   </div>
