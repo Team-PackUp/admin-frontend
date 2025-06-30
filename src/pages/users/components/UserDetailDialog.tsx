@@ -167,9 +167,7 @@ export default function UserDetailDialog({ open, onClose, user }: Props) {
 
                 {ban && (
                   <div className="mt-2">
-                    <Label className="text-muted-foreground mb-1 block">
-                      제한 사유
-                    </Label>
+                    <Label className="text-muted-foreground mb-1 block"></Label>
                     <Textarea
                       value={banReason}
                       onChange={(e) => setBanReason(e.target.value)}
