@@ -48,7 +48,7 @@ export default function UserDetailDialog({ open, onClose, user }: Props) {
     () => {
       toast({
         title: "회원 정보 수정 완료",
-        description: "회원 정보가 수정되었습니다.",
+        description: "회원 정보가 수정되었습니다",
       });
       onClose();
     }
