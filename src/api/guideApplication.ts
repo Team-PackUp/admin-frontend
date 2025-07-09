@@ -17,13 +17,20 @@ export interface GuideApplication {
   status: string;
 }
 
+export type GuideApplicationDetail = {
+  seq: number;
+  status: string;
+  idImageUrl: string;
+  content: any;
+};
+
 export interface GuideApplicationPageResponse {
   content: GuideApplication[];
   totalPages: number;
 }
 
 export interface GuideApplicationUpdateRequest {
-  status: GuideApplicationStatus;
+  status: string;
 }
 
 export const GuideApplicationAPI = {
@@ -51,10 +58,12 @@ export const GuideApplicationAPI = {
     return response.data;
   },
 
-  updateStatus: async (
-    id: number,
-    payload: GuideApplicationUpdateRequest
-  ): Promise<void> => {
-    await apiClient.patch(`/guide-applications/${id}/status`, payload);
+  getById: async (id: number): Promise<GuideApplicationDetail> => {
+    const { data } = await apiClient.get(`/guides/applications/${id}`);
+    return data;
+  },
+
+  updateStatus: async (id: number, payload: string): Promise<void> => {
+    await apiClient.patch(`/guides/applications/${id}/status`, payload);
   },
 };
