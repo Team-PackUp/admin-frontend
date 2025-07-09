@@ -106,9 +106,7 @@ export default function GuideApplicationDetailDialog({
             </div>
 
             <div>
-              <Label className="text-muted-foreground mb-1 block">
-                자기소개
-              </Label>
+              <Label className="text-muted-foreground mb-1 block">지원서</Label>
               <div className="border border-input bg-white rounded-md h-[300px] overflow-y-auto px-3 py-2">
                 <ReactQuill
                   value={data.content}
