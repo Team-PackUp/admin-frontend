@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/pagination";
 import type { GuideApplication } from "@/api/guideApplication";
 import GuideApplicationDetailDialog from "./GuideApplicationDetailDialog";
+import { Badge } from "@/components/ui/badge";
 
 type Props = {
   guideApplications: GuideApplication[];
@@ -35,6 +36,18 @@ export default function GuideApplicationListTable({
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
   const hasGuideApplication = guideApplications.length > 0;
+  const renderStatusBadge = (status: string) => {
+    switch (status) {
+      case "APPLIED":
+        return <Badge variant="default">신청완료</Badge>;
+      case "APPROVED":
+        return <Badge variant="secondary">승인됨</Badge>;
+      case "REJECTED":
+        return <Badge variant="destructive">반려됨</Badge>;
+      case "CANCELED":
+        return <Badge variant="outline">신청취소</Badge>;
+    }
+  };
 
   return (
     <div className="border rounded-md p-4">
@@ -61,7 +74,7 @@ export default function GuideApplicationListTable({
                 <TableCell>{user.nickname}</TableCell>
                 <TableCell>{user.age}</TableCell>
                 <TableCell>{user.nation}</TableCell>
-                <TableCell>{user.status}</TableCell>
+                <TableCell>{renderStatusBadge(user.status)}</TableCell>
                 <TableCell>
                   {format(new Date(user.createdAt), "yyyy-MM-dd")}
                 </TableCell>
