@@ -56,8 +56,8 @@ export default function GuideManagementPage() {
           </TabsList>
 
           <TabsContent value="request">
+            <GuideApplicationSearchForm onSearch={handleSearch} />
             <Card className="mt-4">
-              <GuideApplicationSearchForm onSearch={handleSearch} />
               <CardContent className="pt-4">
                 {isLoading && <p>로딩 중...</p>}
                 {isError && (
