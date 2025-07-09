@@ -17,6 +17,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import type { GuideApplication } from "@/api/guideApplication";
+import GuideApplicationDetailDialog from "./GuideApplicationDetailDialog";
 
 type Props = {
   guideApplications: GuideApplication[];
@@ -31,8 +32,7 @@ export default function GuideApplicationListTable({
   totalPages,
   onPageChange,
 }: Props) {
-  const [selectedGuideApplication, setSelectedGuideApplication] =
-    useState<GuideApplication | null>(null);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
 
   const hasGuideApplication = guideApplications.length > 0;
 
@@ -69,7 +69,7 @@ export default function GuideApplicationListTable({
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => setSelectedGuideApplication(user)}
+                    onClick={() => setSelectedId(user.id)}
                   >
                     상세보기
                   </Button>
@@ -124,13 +124,14 @@ export default function GuideApplicationListTable({
         </Pagination>
       )}
 
-      {/* {selectedGuideApplication && (
-        <UserDetailDialog
-          open={!!selectedUser}
-          user={selectedUser}
-          onClose={() => setSelectedUser(null)}
+      {/* 상세 다이얼로그 */}
+      {selectedId && (
+        <GuideApplicationDetailDialog
+          open={!!selectedId}
+          id={selectedId}
+          onClose={() => setSelectedId(null)}
         />
-      )} */}
+      )}
     </div>
   );
 }
