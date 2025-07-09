@@ -2,9 +2,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import GuideApplicationSearchForm from "./components/application/GuideApplicationSearchForm";
 import { useState } from "react";
-import type { GuideApplicationSearchType } from "@/api/guideApplication";
-// import GuideRequestList from "./components/GuideRequestList";
-// import ActiveGuideList from "./components/ActiveGuideList";
+import type {
+  GuideApplicationSearchType,
+  GuideApplicationStatus,
+} from "@/api/guideApplication";
+import { useGuideApplications } from "@/hooks/useGuideApplications";
+import GuideApplicationListTable from "./components/application/GuideApplicationListTable";
 
 export default function GuideManagementPage() {
   const [page, setPage] = useState(1);
@@ -12,12 +15,28 @@ export default function GuideManagementPage() {
     GuideApplicationSearchType | undefined
   >();
   const [keyword, setKeyword] = useState<string | undefined>();
+  const [statusList, setStatusList] = useState<GuideApplicationStatus[]>([
+    "APPLIED",
+  ]);
 
-  const handleSearch = (type: GuideApplicationSearchType, keyword: string) => {
+  const handleSearch = (
+    type: GuideApplicationSearchType,
+    keyword: string,
+    statusList: GuideApplicationStatus[]
+  ) => {
     setSearchType(type);
     setKeyword(keyword);
-    setPage(1); // 검색하면 1페이지로 가야함
+    setStatusList(statusList);
+    setPage(1);
   };
+
+  const { data, isLoading, isError } = useGuideApplications(
+    page,
+    10,
+    searchType,
+    keyword,
+    statusList
+  );
 
   return (
     <div className="space-y-12">
@@ -30,7 +49,6 @@ export default function GuideManagementPage() {
           </p>
         </div>
 
-        {/* 탭 영역 */}
         <Tabs defaultValue="request" className="w-full">
           <TabsList>
             <TabsTrigger value="request">신청 관리</TabsTrigger>
@@ -39,19 +57,28 @@ export default function GuideManagementPage() {
 
           <TabsContent value="request">
             <Card className="mt-4">
-              {/* <CardContent className="pt-4"> */}
               <GuideApplicationSearchForm onSearch={handleSearch} />
-              {/* <GuideRequestList /> */}
-              {/* </CardContent> */}
+              <CardContent className="pt-4">
+                {isLoading && <p>로딩 중...</p>}
+                {isError && (
+                  <p className="text-destructive">
+                    데이터를 불러오는 데 실패했습니다.
+                  </p>
+                )}
+                {data && (
+                  <GuideApplicationListTable
+                    guideApplications={data.content}
+                    page={page}
+                    totalPages={data.totalPages}
+                    onPageChange={setPage}
+                  />
+                )}
+              </CardContent>
             </Card>
           </TabsContent>
 
           <TabsContent value="active">
-            <Card className="mt-4">
-              {/* <CardContent className="pt-4"> */}
-              {/* <ActiveGuideList /> */}
-              {/* </CardContent> */}
-            </Card>
+            <Card className="mt-4"></Card>
           </TabsContent>
         </Tabs>
       </section>
