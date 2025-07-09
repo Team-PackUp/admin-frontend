@@ -36,8 +36,13 @@ export default function GuideApplicationDetailDialog({
   const queryClient = useQueryClient();
 
   const { mutate: updateStatus, isPending } = useMutation({
-    mutationFn: (status: "APPROVED" | "REJECTED") =>
-      GuideApplicationAPI.updateStatus(id!, status),
+    mutationFn: async (status: "APPROVED" | "REJECTED") => {
+      if (status === "APPROVED") {
+        await GuideApplicationAPI.approve(id!);
+      } else {
+        await GuideApplicationAPI.updateStatus(id!, status);
+      }
+    },
     onSuccess: () => {
       toast({
         title: "처리 완료",

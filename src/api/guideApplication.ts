@@ -63,7 +63,13 @@ export const GuideApplicationAPI = {
     return data;
   },
 
-  updateStatus: async (id: number, payload: string): Promise<void> => {
-    await apiClient.patch(`/guides/applications/${id}/status`, payload);
+  updateStatus: async (id: number, status: string): Promise<void> => {
+    await apiClient.patch(`/guides/applications/${id}/status`, {
+      status,
+    });
+  },
+
+  approve: async (id: number): Promise<void> => {
+    await apiClient.post(`/guides/applications/${id}/approve`);
   },
 };
