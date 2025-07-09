@@ -9,6 +9,7 @@ import RequireAuth from "@/components/auth/RequireAuth";
 import AdminLayout from "@/components/layout/AdminLayout";
 import SystemSettingsPage from "@/pages/settings/SystemSettingsPage";
 import UserManagementPage from "@/pages/users/UserManagermentPage";
+import GuideManagementPage from "@/pages/guides/GuideManagementPage";
 
 const LoginPage = lazy(() => import("@/pages/auth/LoginPage"));
 const DashboardPage = lazy(() => import("@/pages/dashboard/DashboardPage"));
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
       {
         path: "/users",
         element: <UserManagementPage />,
+      },
+      {
+        path: "/guides",
+        element: <GuideManagementPage />,
       },
     ],
   },
