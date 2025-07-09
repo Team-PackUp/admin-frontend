@@ -18,20 +18,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-
-type User = {
-  id: number;
-  email: string;
-  nickname: string;
-  joinType: string;
-  age: number;
-  nation: string;
-  banFlag: "Y" | "N";
-  banReason?: string;
-  banAdminName?: string;
-  withdrawFlag: "Y" | "N";
-  createdAt: string;
-};
+import type { User } from "@/api/user";
 
 type Props = {
   users: User[];
