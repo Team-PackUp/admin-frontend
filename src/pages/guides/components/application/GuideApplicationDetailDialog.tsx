@@ -85,22 +85,23 @@ export default function GuideApplicationDetailDialog({
 
         {data && (
           <div className="space-y-6 mt-4">
-            {/* 신분증 이미지 */}
             <div>
               <Label className="text-muted-foreground mb-1 block">
                 신분증 이미지
               </Label>
-              <div className="w-full max-w-md aspect-video border rounded-md overflow-hidden bg-muted flex items-center justify-center">
+              <div className="w-full max-w-md border rounded-lg overflow-hidden bg-muted">
                 {data.idImageUrl ? (
-                  <img
-                    src={data.idImageUrl}
-                    alt="신분증 이미지"
-                    className="w-auto h-full object-contain"
-                  />
+                  <div className="relative pb-[56.25%] bg-background border border-border rounded-md overflow-hidden">
+                    <img
+                      src={data.idImageUrl}
+                      alt="신분증 이미지"
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                  </div>
                 ) : (
-                  <span className="text-sm text-muted-foreground">
+                  <div className="aspect-video flex items-center justify-center bg-background border border-dashed border-border rounded-md text-sm text-muted-foreground">
                     이미지가 없습니다
-                  </span>
+                  </div>
                 )}
               </div>
             </div>
